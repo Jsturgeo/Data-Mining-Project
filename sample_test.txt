@@ -1,53 +1,53 @@
 id::data
-1::chan 's stunts are limited and so embellished by editing that there 's really not much of a sense of action or even action comedy
-2::one of the best films of the year with its exploration of the obstacles to happiness faced by five contemporary individuals a psychological masterpiece
-3::cq 's reflection of artists and the love of cinema and self suggests nothing less than a new voice that deserves to be considered as a possible successor to the best european directors
-4::peppered with witty dialogue and inventive moments
-5::harmless fun
-6::tom shadyac has learned a bit more craft since directing adams , but he still lingers over every point until the slowest viewer grasps it
-7::plays in broad outline as pandering middle age buddy comedy
-8::instead of making his own style , director marcus adams just copies from various sources good sources , bad mixture
-9::like mike is a harmlessly na ve slice of b ball fantasy , fit for filling in during the real nba 's off season
-10::this long and relentlessly saccharine film is a clear case of preaching to the converted
-11::alan and his fellow survivors are idiosyncratic enough to lift the movie above its playwriting 101 premise
-12::most consumers of lo mein and general tso 's chicken barely give a thought to the folks who prepare and deliver it , so , hopefully , this film will attach a human face to all those little steaming cartons
-13::where tom green stages his gags as assaults on america 's knee jerk moral sanctimony , jackass lacks aspirations of social upheaval
-14::only those most addicted to film violence in all its forms will find anything here to appreciate
-15::one of herzog 's least inspired works
-16::the execution is so pedestrian that the most positive comment we can make is that rob schneider actually turns in a pretty convincing performance as a prissy teenage girl
-17::world traveler might not go anywhere new , or arrive anyplace special , but it 's certainly an honest attempt to get at something
-18::like many western action films , this thriller is too loud and thoroughly overbearing , but its heartfelt concern about north korea 's recent past and south korea 's future adds a much needed moral weight
-19::allen 's funniest and most likeable movie in years
-20::ice age posits a heretofore unfathomable question is it possible for computer generated characters to go through the motions \?
-21::overall very good for what it 's trying to do
-22::the emotional overload of female angst irreparably drags the film down
-23::there is more than one joke about putting the toilet seat down and that should tell you everything you need to know about all the queen 's men
-24::this is an insultingly inept and artificial examination of grief and its impacts upon the relationships of the survivors
-25::creepy , authentic and dark this disturbing bio pic is hard to forget
-26::others , more attuned to the anarchist maxim that 'the urge to destroy is also a creative urge' , or more willing to see with their own eyes , will find morrison 's iconoclastic uses of technology to be liberating
-27::an intimate , good humored ethnic comedy like numerous others but cuts deeper than expected
-28::newcomer helmer kevin donovan is hamstrung by a badly handled screenplay of what is really an amusing concept a high tech tux that transforms its wearer into a superman
-29::a densely constructed , highly referential film , and an audacious return to form that can comfortably sit among jean luc godard 's finest work
-30::proof that a thriller can be sleekly shot , expertly cast , paced with crisp professionalism and still be a letdown if its twists and turns hold no more surprise than yesterday 's weather report
-31::occasionally amateurishly made but a winsome cast and nice dialogue keeps it going
-32::ice age is the first computer generated feature cartoon to feel like other movies , and that makes for some glacial pacing early on
-33::the result is more depressing than liberating , but it 's never boring
-34::though frodo 's quest remains unfulfilled , a hardy group of determined new zealanders has proved its creative mettle
-35::rarely , a movie is more than a movie go
-36::i simply ca n't recommend it enough
-37::the film , like jimmy 's routines , could use a few good laughs
-38::what denis accomplishes in his chilling , unnerving film is a double portrait of two young women whose lives were as claustrophic , suffocating and chilly as the attics to which they were inevitably consigned
-39::it confirms fincher 's status as a film maker who artfully bends technical know how to the service of psychological insight
-40::the minor figures surrounding bobby form a gritty urban mosaic
-41::i still ca n't relate to stuart he 's a mouse , for cryin' out loud , and all he does is milk it with despondent eyes and whine that nobody treats him human enough
-42::schmaltzy and unfunny , adam sandler 's cartoon about hanukkah is numbingly bad , little nicky bad , 10 worst list bad
-43::a banal , virulently unpleasant excuse for a romantic comedy
-44::douglas mcgrath 's nicholas nickleby does dickens as it should be done cinematically
-45::two hours of melodramatic musical married to two hours of underdog sports intrigue , if the picture also shares the weaknesses of both genres , more 's the pity
-46::two hours fly by opera 's a pleasure when you do n't have to endure intermissions and even a novice to the form comes away exhilarated
-47::changing lanes is an anomaly for a hollywood movie it 's a well written and occasionally challenging social drama that actually has something interesting to say
-48::a ponderous meditation on love that feels significantly longer than its relatively scant 97 minutes
-49::i loved looking at this movie i just did n't care as much for the story
+1::chan 's stunts are limited and so embellished by editing that there 's really not much of a sense of action or even action comedy::0
+2::one of the best films of the year with its exploration of the obstacles to happiness faced by five contemporary individuals a psychological masterpiece::1
+3::cq 's reflection of artists and the love of cinema and self suggests nothing less than a new voice that deserves to be considered as a possible successor to the best european directors::1
+4::peppered with witty dialogue and inventive moments::1
+5::harmless fun::1
+6::tom shadyac has learned a bit more craft since directing adams , but he still lingers over every point until the slowest viewer grasps it::0
+7::plays in broad outline as pandering middle age buddy comedy::0
+8::instead of making his own style , director marcus adams just copies from various sources good sources , bad mixture::0
+9::like mike is a harmlessly na ve slice of b ball fantasy , fit for filling in during the real nba 's off season::0
+10::this long and relentlessly saccharine film is a clear case of preaching to the converted::0
+11::alan and his fellow survivors are idiosyncratic enough to lift the movie above its playwriting 101 premise::0
+12::most consumers of lo mein and general tso 's chicken barely give a thought to the folks who prepare and deliver it , so , hopefully , this film will attach a human face to all those little steaming cartons::1
+13::where tom green stages his gags as assaults on america 's knee jerk moral sanctimony , jackass lacks aspirations of social upheaval::0
+14::only those most addicted to film violence in all its forms will find anything here to appreciate::0
+15::one of herzog 's least inspired works::0
+16::the execution is so pedestrian that the most positive comment we can make is that rob schneider actually turns in a pretty convincing performance as a prissy teenage girl::0
+17::world traveler might not go anywhere new , or arrive anyplace special , but it 's certainly an honest attempt to get at something::1
+18::like many western action films , this thriller is too loud and thoroughly overbearing , but its heartfelt concern about north korea 's recent past and south korea 's future adds a much needed moral weight::0
+19::allen 's funniest and most likeable movie in years::1
+20::ice age posits a heretofore unfathomable question is it possible for computer generated characters to go through the motions \?::1
+21::overall very good for what it 's trying to do::1
+22::the emotional overload of female angst irreparably drags the film down::0
+23::there is more than one joke about putting the toilet seat down and that should tell you everything you need to know about all the queen 's men::0
+24::this is an insultingly inept and artificial examination of grief and its impacts upon the relationships of the survivors::0
+25::creepy , authentic and dark this disturbing bio pic is hard to forget::1
+26::others , more attuned to the anarchist maxim that 'the urge to destroy is also a creative urge' , or more willing to see with their own eyes , will find morrison 's iconoclastic uses of technology to be liberating::1
+27::an intimate , good humored ethnic comedy like numerous others but cuts deeper than expected::1
+28::newcomer helmer kevin donovan is hamstrung by a badly handled screenplay of what is really an amusing concept a high tech tux that transforms its wearer into a superman::0
+29::a densely constructed , highly referential film , and an audacious return to form that can comfortably sit among jean luc godard 's finest work::1
+30::proof that a thriller can be sleekly shot , expertly cast , paced with crisp professionalism and still be a letdown if its twists and turns hold no more surprise than yesterday 's weather report::1
+31::occasionally amateurishly made but a winsome cast and nice dialogue keeps it going::1
+32::ice age is the first computer generated feature cartoon to feel like other movies , and that makes for some glacial pacing early on::0
+33::the result is more depressing than liberating , but it 's never boring::1
+34::though frodo 's quest remains unfulfilled , a hardy group of determined new zealanders has proved its creative mettle::1
+35::rarely , a movie is more than a movie go::1
+36::i simply ca n't recommend it enough::1
+37::the film , like jimmy 's routines , could use a few good laughs::0
+38::what denis accomplishes in his chilling , unnerving film is a double portrait of two young women whose lives were as claustrophic , suffocating and chilly as the attics to which they were inevitably consigned::1
+39::it confirms fincher 's status as a film maker who artfully bends technical know how to the service of psychological insight::1
+40::the minor figures surrounding bobby form a gritty urban mosaic::1
+41::i still ca n't relate to stuart he 's a mouse , for cryin' out loud , and all he does is milk it with despondent eyes and whine that nobody treats him human enough::0
+42::schmaltzy and unfunny , adam sandler 's cartoon about hanukkah is numbingly bad , little nicky bad , 10 worst list bad::0
+43::a banal , virulently unpleasant excuse for a romantic comedy::0
+44::douglas mcgrath 's nicholas nickleby does dickens as it should be done cinematically::1
+45::two hours of melodramatic musical married to two hours of underdog sports intrigue , if the picture also shares the weaknesses of both genres , more 's the pity::0
+46::two hours fly by opera 's a pleasure when you do n't have to endure intermissions and even a novice to the form comes away exhilarated::1
+47::changing lanes is an anomaly for a hollywood movie it 's a well written and occasionally challenging social drama that actually has something interesting to say::1
+48::a ponderous meditation on love that feels significantly longer than its relatively scant 97 minutes::1
+49::i loved looking at this movie i just did n't care as much for the story::0
 50::a few nonbelievers may rethink their attitudes when they see the joy the characters take in this creed , but skeptics are n't likely to enter the theater
 51::audrey tatou has a knack for picking roles that magnify her outrageous charm , and in this literate french comedy , she 's as morning glory exuberant as she was in am lie
 52::a work of astonishing delicacy and force

@@ -2,21 +2,30 @@
 % author: your name
 % date: date for release this code
 
-%clear; clc;
+clear; clc;
 
 %% Section 1: preparation before training
 
 % section 1.1 read file 'train.txt', load data and vocabulary by using function read_data()
 
-[data, wordMap] = read_data;
+[data, wordMap] = read_data('train.txt');
 
+% Split data into training and testing sets
+numSamples = size(data,1);
+numTrain = 0.9 * numSamples;
+
+data = data(randperm(numSamples),:);
+trainData = data(1:numTrain,:);
+testData = data(numTrain + 1:end,:);
+
+% String for padding sentences that are too short
+padVal = '#pad#';
 
 % Create initial word embedding
-d = 5;
+load('customWord2Vec.mat');
+T = customWordvecs;
+d = 300;
 numWords = length(wordMap);
-% random sample from normal distribution 
-% with mean=0, variance=0.1
-T = normrnd(0, 0.1, [numWords, d]);
 
 % Initialize filters
 filterSizes = [2, 3, 4];
@@ -30,6 +39,7 @@ for i = 1:length(filterSizes)
     filterSize = filterSizes(i);
     % initialize W with: FW x FH x FC x K
     convW{i} = normrnd(0, 0.1, [filterSize, d, 1, numFilters]);
+    % initialize bias B as K x 1
     convB{i} = zeros(numFilters, 1);
 end
 
@@ -39,6 +49,9 @@ numClasses = 2;
 outW = normrnd(0, 0.1, [totalFilters, numClasses]);
 outB = zeros(numClasses, 1);
 
+% Learning parameters
+% TODO: find best value of eta
+eta = 0.0001;
 
 %% Section 2: training
 % Note: 
@@ -46,9 +59,63 @@ outB = zeros(numClasses, 1);
 % you may need the follow MatConvNet functions: 
 %       vl_nnconv(), vl_nnpool(), vl_nnrelu(), vl_nnconcat(), and vl_nnloss()
 
-for ind=1:length(data)
-    [i, sentence, label] = data{ind,:}
+% TODO: find best number of epochs to perform
+for epoch=1:1
+    for ind=1:length(trainData)
+        [i, sentence, label] = trainData{ind,:};
+        label = label + 1;
+        sentenceLength = length(sentence);
+        % Pad sentence if sentence is too short for filters
+        % TODO: put in separate function?
+        if sentenceLength < max(filterSizes)
+            numPad = max(filterSizes) - sentenceLength;
+            padCell = cell(1, numPad);
+            [padCell{1:numPad}] = deal(padVal);
+            sentence = [sentence padCell];
+            trainData{ind, 2} = sentence;
+            sentenceLength = length(sentence);
+        end
+        sentenceWordInds = zeros(sentenceLength, 1);
+        % get index for each word in the sentence
+        for w=1:sentenceLength
+            sentenceWordInds(w) = wordMap(strjoin(sentence(w)));
+        end
+        X = T(sentenceWordInds, :);
+        
+        % Run sample through CNN (forward and backward)
+        res = sentimentCNN(X, convW, convB, outW, outB, label);
+
+        %% section 2.3 update the parameters
+        % TODO: should we be updating T (word embedding) as well?
+        for j=1:numFilterSizes     
+            convW{j} = convW{j} - eta * res.dzdw{j};
+            convB{j} = convB{j} - eta * res.dzdb{j};  
+        end
+        outW = outW - eta * res.dEdw;
+        outB = outB - eta * res.dEdo;
+        
+    end 
+end
+
+%% TESTING
+% store labels to compute accuracy later
+trueLabels = zeros(length(testData), 1);
+predLabels = zeros(length(testData), 1);
+
+for ind=1:length(testData)
+    [i, sentence, label] = testData{ind,:};
+    trueLabels(ind) = label;
     sentenceLength = length(sentence);
+    % Pad sentence if sentence is too short for filters
+    % TODO: put in separate function?
+    if sentenceLength < max(filterSizes)
+        numPad = max(filterSizes) - sentenceLength;
+        padCell = cell(1, numPad);
+        [padCell{1:numPad}] = deal(padVal);
+        sentence = [sentence padCell];
+        testData{ind, 2} = sentence;
+        sentenceLength = length(sentence);
+    end
     sentenceWordInds = zeros(sentenceLength, 1);
     % get index for each word in the sentence
     for w=1:sentenceLength
@@ -56,42 +123,18 @@ for ind=1:length(data)
     end
     X = T(sentenceWordInds, :);
     
-    poolRes = cell(1, numFilterSizes);
-    cache = cell(2, numFilterSizes);
+    %Run sample through CNN (forward only)
+    res = sentimentCNN(X, convW, convB, outW, outB);
     
-    for j=1:numFilterSizes
-        % convolutional operation
-        if filterSizes(j) > sentenceLength
-            cache{2, j} = 0;
-            cache{1, j} = 0;
-            poolRes{j} = 0; 
-           continue 
-        end
-        conv = vl_nnconv(X, convW{j}, convB{j});
-        
-        % apply activation function: relu
-        relu = vl_nnrelu(conv);
-        
-        % 1-max pooling operation
-        convSize = size(conv);
-        pool = vl_nnpool(relu, [convSize(1), 1]);
-        
-        % important: keep these values for back-prop
-        cache{2, j} = relu;
-        cache{1, j} = conv;
-        poolRes{j} = pool;  
-    end
-    
+    % Get index of greatest value from out 2x1 output vector
+    % TODO: should this abs() be here?
+    [~, output] = max(abs(res.output));
+    predLabels(ind) = output - 1;
+end 
 
-    
-    %% for each example in train.txt do
-    %% section 2.1 forward propagation and compute the loss
+accuracy = sum(predLabels == trueLabels)/length(trueLabels);
 
-
-    %% section 2.2 backward propagation and compute the derivatives
-    % TODO: your code
-
-    %% section 2.3 update the parameters
-    % TODO: your code
-end %end for
+%% Once we have trained good parameters, save them.
+%save('custom_embedding.mat', 'T', 'wordMap');
+%save('weights.mat', 'convW', 'convB', 'outW', 'outB');
     
