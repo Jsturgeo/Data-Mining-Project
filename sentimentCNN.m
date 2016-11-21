@@ -27,6 +27,7 @@ for j=1:numFilterSizes
     poolRes{j} = pool;  
 end
     
+<<<<<<< HEAD
 % max pooling to create feature vector
 poolResCombined = vl_nnconcat(poolRes, 3);   
 featureVec = reshape(poolResCombined, [totalFilters, 1]); 
@@ -36,7 +37,6 @@ output = transpose(outW)*featureVec + outB;
 res.output = reshape(output, [1, 1, numel(output)]);
 
 %% Backpropagation
-if nargin > 5
     % loss from the output layer
     dEdo = vl_nnsoftmaxloss(res.output, label, 1);
     res.dEdo = reshape(dEdo, [numClasses, 1]);
@@ -62,6 +62,4 @@ if nargin > 5
          % Backward through convolution
          [res.dzdx{j}, res.dzdw{j}, res.dzdb{j}] = vl_nnconv(X, convW{j}, convB{j}, dzdrelu);
      end
-
-
 end

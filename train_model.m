@@ -137,4 +137,3 @@ accuracy = sum(predLabels == trueLabels)/length(trueLabels);
 %% Once we have trained good parameters, save them.
 %save('custom_embedding.mat', 'T', 'wordMap');
 %save('weights.mat', 'convW', 'convB', 'outW', 'outB');
-    
