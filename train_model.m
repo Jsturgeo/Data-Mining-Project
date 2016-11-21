@@ -60,7 +60,7 @@ eta = 0.0001;
 %       vl_nnconv(), vl_nnpool(), vl_nnrelu(), vl_nnconcat(), and vl_nnloss()
 
 % TODO: find best number of epochs to perform
-for epoch=1:1
+for epoch=1:20
     for ind=1:length(trainData)
         [i, sentence, label] = trainData{ind,:};
         label = label + 1;

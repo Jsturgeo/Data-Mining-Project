@@ -27,7 +27,6 @@ for j=1:numFilterSizes
     poolRes{j} = pool;  
 end
     
-<<<<<<< HEAD
 % max pooling to create feature vector
 poolResCombined = vl_nnconcat(poolRes, 3);   
 featureVec = reshape(poolResCombined, [totalFilters, 1]); 
