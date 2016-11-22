@@ -37,6 +37,7 @@ res.output = reshape(output, [1, 1, numel(output)]);
 
 %% Backpropagation
     % loss from the output layer
+if nargin > 5
     dEdo = vl_nnsoftmaxloss(res.output, label, 1);
     res.dEdo = reshape(dEdo, [numClasses, 1]);
     

@@ -2,13 +2,13 @@
 % author: your name
 % date: date for release this code
 
-clear; clc;
+%clear; clc;
 
 %% Section 1: preparation before training
 
 % section 1.1 read file 'train.txt', load data and vocabulary by using function read_data()
 
-[data, wordMap] = read_data('train.txt');
+%[data, wordMap] = read_data('train.txt');
 
 % Split data into training and testing sets
 numSamples = size(data,1);
@@ -60,6 +60,7 @@ eta = 0.0001;
 %       vl_nnconv(), vl_nnpool(), vl_nnrelu(), vl_nnconcat(), and vl_nnloss()
 
 % TODO: find best number of epochs to perform
+accuracy = zeros(20,1);
 for epoch=1:20
     for ind=1:length(trainData)
         [i, sentence, label] = trainData{ind,:};
@@ -95,7 +96,7 @@ for epoch=1:20
         outB = outB - eta * res.dEdo;
         
     end 
-end
+
 
 %% TESTING
 % store labels to compute accuracy later
@@ -132,8 +133,9 @@ for ind=1:length(testData)
     predLabels(ind) = output - 1;
 end 
 
-accuracy = sum(predLabels == trueLabels)/length(trueLabels);
+accuracy(epoch) = sum(predLabels == trueLabels)/length(trueLabels);
 
+end
 %% Once we have trained good parameters, save them.
 %save('custom_embedding.mat', 'T', 'wordMap');
 %save('weights.mat', 'convW', 'convB', 'outW', 'outB');
