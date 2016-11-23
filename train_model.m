@@ -8,63 +8,117 @@
 
 % section 1.1 read file 'train.txt', load data and vocabulary by using function read_data()
 
-%[data, wordMap] = read_data('train.txt');
+[data, wordMap] = read_data('train.txt');
 
-% Split data into training and testing sets
+% Split data into k folds
+kfolds=5;
 numSamples = size(data,1);
-numTrain = 0.9 * numSamples;
-
+length_fold = numSamples / kfolds; 
 data = data(randperm(numSamples),:);
-trainData = data(1:numTrain,:);
-testData = data(numTrain + 1:end,:);
+s =0;
+accuracy = zeros(kfolds,1);
+    
+for k= 1:kfolds 
+    testData = data(s+1:length_fold*k,:);
+    if (k>1)
+        trainData = data([1:s length_fold*k+1:end],:);
+    else
+        trainData = data(length_fold+1:end,:);
+    end
+    s =+ length_fold;
 
-% String for padding sentences that are too short
-padVal = '#pad#';
 
-% Create initial word embedding
-load('customWord2Vec.mat');
-T = customWordvecs;
-d = 300;
-numWords = length(wordMap);
+    % String for padding sentences that are too short
+    padVal = '#pad#';
 
-% Initialize filters
-filterSizes = [2, 3, 4];
-numFilterSizes = length(filterSizes);
-numFilters = 2;
+    % Create initial word embedding
+    load('customWord2Vec.mat');
+    T = customWordvecs;
+    d = 300;
+    numWords = length(wordMap);
 
-convW = cell(length(filterSizes), 1);
-convB = cell(length(filterSizes), 1);
+    % Initialize filters
+    filterSizes = [2, 3, 4];
+    numFilterSizes = length(filterSizes);
+    numFilters = 2;
 
-for i = 1:length(filterSizes)
-    filterSize = filterSizes(i);
-    % initialize W with: FW x FH x FC x K
-    convW{i} = normrnd(0, 0.1, [filterSize, d, 1, numFilters]);
-    % initialize bias B as K x 1
-    convB{i} = zeros(numFilters, 1);
-end
+    convW = cell(length(filterSizes), 1);
+    convB = cell(length(filterSizes), 1);
 
-% Initialize output layer
-totalFilters = length(filterSizes) * numFilters;
-numClasses = 2;
-outW = normrnd(0, 0.1, [totalFilters, numClasses]);
-outB = zeros(numClasses, 1);
+    for i = 1:length(filterSizes)
+        filterSize = filterSizes(i);
+        % initialize W with: FW x FH x FC x K
+        convW{i} = normrnd(0, 0.1, [filterSize, d, 1, numFilters]);
+        % initialize bias B as K x 1
+        convB{i} = zeros(numFilters, 1);
+    end
 
-% Learning parameters
-% TODO: find best value of eta
-eta = 0.0001;
+    % Initialize output layer
+    totalFilters = length(filterSizes) * numFilters;
+    numClasses = 2;
+    outW = normrnd(0, 0.1, [totalFilters, numClasses]);
+    outB = zeros(numClasses, 1);
 
-%% Section 2: training
-% Note: 
-% you may need the resouces [2-4] in the project description.
-% you may need the follow MatConvNet functions: 
-%       vl_nnconv(), vl_nnpool(), vl_nnrelu(), vl_nnconcat(), and vl_nnloss()
+    % Learning parameters
+    % TODO: find best value of eta
+    eta = 0.0001;
 
-% TODO: find best number of epochs to perform
-accuracy = zeros(20,1);
-for epoch=1:20
-    for ind=1:length(trainData)
-        [i, sentence, label] = trainData{ind,:};
-        label = label + 1;
+    %% Section 2: training
+    % Note: 
+    % you may need the resouces [2-4] in the project description.
+    % you may need the follow MatConvNet functions: 
+    %       vl_nnconv(), vl_nnpool(), vl_nnrelu(), vl_nnconcat(), and vl_nnloss()
+
+    % TODO: find best number of epochs to perform
+    
+    for epoch=1:120
+        %shuffle for each epoch
+        trainData = trainData(randperm(size(trainData,1)),:);
+    
+        for ind=1:length(trainData)
+            [i, sentence, label] = trainData{ind,:};
+            label = label + 1;  %add 1 because matlab uses indexing at 1
+            sentenceLength = length(sentence);
+            % Pad sentence if sentence is too short for filters
+            % TODO: put in separate function?
+            if sentenceLength < max(filterSizes)
+                numPad = max(filterSizes) - sentenceLength;
+                padCell = cell(1, numPad);
+                [padCell{1:numPad}] = deal(padVal);
+                sentence = [sentence padCell];
+                trainData{ind, 2} = sentence;
+                sentenceLength = length(sentence);
+            end
+            sentenceWordInds = zeros(sentenceLength, 1);
+            % get index for each word in the sentence
+            for w=1:sentenceLength
+                sentenceWordInds(w) = wordMap(strjoin(sentence(w)));
+            end
+            X = T(sentenceWordInds, :);
+
+            % Run sample through CNN (forward and backward)
+            res = sentimentCNN(X, convW, convB, outW, outB, label);
+
+            %% section 2.3 update the parameters
+            % TODO: should we be updating T (word embedding) as well?
+            for j=1:numFilterSizes     
+                convW{j} = convW{j} - eta * res.dzdw{j};
+                convB{j} = convB{j} - eta * res.dzdb{j};  
+            end
+            outW = outW - eta * res.dEdw;
+            outB  = outB - eta * res.dEdo;
+
+        end 
+
+    end
+    %% VALIDATION OF MODEL
+    % store labels to compute accuracy later
+    trueLabels = zeros(length(testData), 1);
+    predLabels = zeros(length(testData), 1);
+    
+    for ind=1:length(testData)
+        [i, sentence, label] = testData{ind,:};
+        trueLabels(ind) = label;
         sentenceLength = length(sentence);
         % Pad sentence if sentence is too short for filters
         % TODO: put in separate function?
@@ -73,7 +127,7 @@ for epoch=1:20
             padCell = cell(1, numPad);
             [padCell{1:numPad}] = deal(padVal);
             sentence = [sentence padCell];
-            trainData{ind, 2} = sentence;
+            testData{ind, 2} = sentence;
             sentenceLength = length(sentence);
         end
         sentenceWordInds = zeros(sentenceLength, 1);
@@ -82,59 +136,18 @@ for epoch=1:20
             sentenceWordInds(w) = wordMap(strjoin(sentence(w)));
         end
         X = T(sentenceWordInds, :);
-        
-        % Run sample through CNN (forward and backward)
-        res = sentimentCNN(X, convW, convB, outW, outB, label);
 
-        %% section 2.3 update the parameters
-        % TODO: should we be updating T (word embedding) as well?
-        for j=1:numFilterSizes     
-            convW{j} = convW{j} - eta * res.dzdw{j};
-            convB{j} = convB{j} - eta * res.dzdb{j};  
-        end
-        outW = outW - eta * res.dEdw;
-        outB = outB - eta * res.dEdo;
-        
+        %Run sample through CNN (forward only)
+        res = sentimentCNN(X, convW, convB, outW, outB);
+
+        % Get index of greatest value from out 2x1 output vector
+        % TODO: should this abs() be here?
+        [~, output] = max(res.output);
+        predLabels(ind) = output - 1;
     end 
 
-
-%% TESTING
-% store labels to compute accuracy later
-trueLabels = zeros(length(testData), 1);
-predLabels = zeros(length(testData), 1);
-
-for ind=1:length(testData)
-    [i, sentence, label] = testData{ind,:};
-    trueLabels(ind) = label;
-    sentenceLength = length(sentence);
-    % Pad sentence if sentence is too short for filters
-    % TODO: put in separate function?
-    if sentenceLength < max(filterSizes)
-        numPad = max(filterSizes) - sentenceLength;
-        padCell = cell(1, numPad);
-        [padCell{1:numPad}] = deal(padVal);
-        sentence = [sentence padCell];
-        testData{ind, 2} = sentence;
-        sentenceLength = length(sentence);
-    end
-    sentenceWordInds = zeros(sentenceLength, 1);
-    % get index for each word in the sentence
-    for w=1:sentenceLength
-        sentenceWordInds(w) = wordMap(strjoin(sentence(w)));
-    end
-    X = T(sentenceWordInds, :);
+    accuracy(k) = sum(predLabels == trueLabels)/length(trueLabels);
     
-    %Run sample through CNN (forward only)
-    res = sentimentCNN(X, convW, convB, outW, outB);
-    
-    % Get index of greatest value from out 2x1 output vector
-    % TODO: should this abs() be here?
-    [~, output] = max(abs(res.output));
-    predLabels(ind) = output - 1;
-end 
-
-accuracy(epoch) = sum(predLabels == trueLabels)/length(trueLabels);
-
 end
 %% Once we have trained good parameters, save them.
 %save('custom_embedding.mat', 'T', 'wordMap');
