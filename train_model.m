@@ -1,6 +1,15 @@
 %% CMPT-741 template code for: sentiment analysis base on Convolutional Neural Network
 % author: your name
 % date: date for release this code
+% Adagrad implemented from this pseudocode: https://xcorr.net/2014/01/23/adagrad-eliminating-learning-rates-in-stochastic-gradient-descent/
+% Other possible avenues to consider (from the original paper):
+%   - using more filters (closer to 100 instead of just 2)
+%   - experiment with finetuning the word2vec vectors
+%   - add in glove vectors as separate channel
+%   - make sure randomly initialized vectors have the same variance as the
+%   pre-trained ones
+%   - add 50% dropout to avoid overfitting
+
 
 %clear; clc;
 
@@ -8,17 +17,17 @@
 
 % section 1.1 read file 'train.txt', load data and vocabulary by using function read_data()
 
-[data, wordMap] = read_data('train.txt');
+%[data, wordMap] = read_data('train.txt');
 
 % Split data into k folds
-kfolds=5;
+kfolds=2;
 numSamples = size(data,1);
 length_fold = numSamples / kfolds; 
 data = data(randperm(numSamples),:);
 s =0;
 accuracy = zeros(kfolds,1);
     
-for k= 1:kfolds 
+for k= 1:kfolds
     testData = data(s+1:length_fold*k,:);
     if (k>1)
         trainData = data([1:s length_fold*k+1:end],:);
@@ -59,9 +68,22 @@ for k= 1:kfolds
     outW = normrnd(0, 0.1, [totalFilters, numClasses]);
     outB = zeros(numClasses, 1);
 
-    % Learning parameters
-    % TODO: find best value of eta
-    eta = 0.0001;
+    % Initial learning parameter eta for Adagrad
+    eta = 0.01; % initial setting, can probably stay as-is
+    fudge_factor = 1e-6; % for numerical stability
+    % Initialize historical gradients to be zero for each of the parameters
+    % that we need to update
+    historical_grad.dzdw = cell(length(filterSizes), 1);
+    historical_grad.dzdb = cell(length(filterSizes), 1);
+    for i = 1:length(filterSizes)
+        filterSize = filterSizes(i);
+        % initialize W with: FW x FH x FC x K
+        historical_grad.dzdw{i} = zeros(filterSize, d, 1, numFilters);
+        % initialize bias B as K x 1
+        historical_grad.dzdb{i} = zeros(numFilters, 1);
+    end
+    historical_grad.dEdw = zeros(totalFilters, numClasses);
+    historical_grad.dEdo = zeros(numClasses, 1);    
 
     %% Section 2: training
     % Note: 
@@ -71,7 +93,8 @@ for k= 1:kfolds
 
     % TODO: find best number of epochs to perform
     
-    for epoch=1:120
+    for epoch=1:100
+        epoch
         %shuffle for each epoch
         trainData = trainData(randperm(size(trainData,1)),:);
     
@@ -100,13 +123,18 @@ for k= 1:kfolds
             res = sentimentCNN(X, convW, convB, outW, outB, label);
 
             %% section 2.3 update the parameters
+            
             % TODO: should we be updating T (word embedding) as well?
-            for j=1:numFilterSizes     
-                convW{j} = convW{j} - eta * res.dzdw{j};
-                convB{j} = convB{j} - eta * res.dzdb{j};  
+            for j=1:numFilterSizes 
+                historical_grad.dzdw{j} = historical_grad.dzdw{j} + (res.dzdw{j}).^2;
+                convW{j} = convW{j} - eta * (res.dzdw{j} ./ (fudge_factor + sqrt(historical_grad.dzdw{j})));
+                historical_grad.dzdb{j} = historical_grad.dzdb{j} + (res.dzdb{j}).^2;
+                convB{j} = convB{j} - eta * (res.dzdb{j} ./ (fudge_factor + sqrt(historical_grad.dzdb{j})));  
             end
-            outW = outW - eta * res.dEdw;
-            outB  = outB - eta * res.dEdo;
+            historical_grad.dEdw = historical_grad.dEdw + (res.dEdw).^2;
+            outW = outW - eta * (res.dEdw ./ (fudge_factor + sqrt(historical_grad.dEdw)));
+            historical_grad.dEdo = historical_grad.dEdo + (res.dEdo).^2;
+            outB  = outB - eta * (res.dEdo ./ (fudge_factor + sqrt(historical_grad.dEdo)));
 
         end 
 
