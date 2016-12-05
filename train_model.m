@@ -20,7 +20,7 @@
 %[data, wordMap] = read_data('train.txt', 1);
 
 % Split data into k folds
-kfolds=5;
+kfolds=2;
 numSamples = size(data,1);
 length_fold = numSamples / kfolds; 
 data = data(randperm(numSamples),:);
@@ -42,7 +42,7 @@ accuracy = zeros(kfolds,1);
     % Initialize filters
     dims.filterSizes = [2, 3, 4];
     dims.numFilterSizes = length(dims.filterSizes);
-    dims.numFilters = 2;
+    dims.numFilters = 20;
 
     convW = cell(length(dims.filterSizes), 1);
     convB = cell(length(dims.filterSizes), 1);
@@ -132,6 +132,8 @@ accuracy = zeros(kfolds,1);
                 X = X - eta * res.dzdx{j};
             end
             for w=1:sentenceLength
+            %for w=1:dims.numFilterSize
+                %T(sentenceWordInds,: ) = T(sentenceWordInds, :) - 0.1 * res.dzdx{w}; 
                 T(sentenceWordInds(w), :) = X(w,:);
             end
             
@@ -182,5 +184,5 @@ accuracy = zeros(kfolds,1);
     
 end
 %% Once we have trained good parameters, save them.
-%save('custom_embedding.mat', 'T', 'wordMap');
-%save('weights.mat', 'convW', 'convB', 'outW', 'outB', 'dims', 'padVal');
+save('custom_embedding.mat', 'T', 'wordMap');
+save('weights.mat', 'convW', 'convB', 'outW', 'outB', 'dims', 'padVal');
