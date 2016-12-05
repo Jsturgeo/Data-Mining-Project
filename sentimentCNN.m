@@ -1,19 +1,12 @@
-function res = sentimentCNN(X, convW, convB, outW, outB, label)
-% Important dimensions 
-% TODO: calculate these dynamically instead of hard-coding for easier
-% tweaking
-filterSizes = [2, 3, 4];
-numFilterSizes = length(filterSizes);
-numFilters = 2;
-totalFilters = length(filterSizes) * numFilters;
-numClasses = 2;
+function res = sentimentCNN(X, convW, convB, outW, outB, dims, label)
 
-poolRes = cell(1, numFilterSizes);
-reluRes = cell(1, numFilterSizes);
-convRes = cell(1, numFilterSizes);
+
+poolRes = cell(1, dims.numFilterSizes);
+reluRes = cell(1, dims.numFilterSizes);
+convRes = cell(1, dims.numFilterSizes);
     
 %% section 2.1 forward propagation and compute the loss
-for j=1:numFilterSizes
+for j=1:dims.numFilterSizes
     % convolutional operation
     conv = vl_nnconv(X, convW{j}, convB{j});        
     % apply activation function: relu
@@ -30,7 +23,7 @@ end
     
 % max pooling to create feature vector
 poolResCombined = vl_nnconcat(poolRes, 3);   
-featureVec = reshape(poolResCombined, [totalFilters, 1]); 
+featureVec = reshape(poolResCombined, [dims.totalFilters, 1]); 
 
 % Apply weights to feature vector to get final output
 output = transpose(outW)*featureVec + outB;
@@ -38,10 +31,10 @@ res.output = reshape(output, [1, 1, numel(output)]);
 
 %% Backpropagation
     % loss from the output layer
-if nargin > 5
+if nargin > 6
    
     dEdo = vl_nnsoftmaxloss(res.output, label,1);
-    res.dEdo = reshape(dEdo, [numClasses, 1]);
+    res.dEdo = reshape(dEdo, [dims.numClasses, 1]);
     % backward through the weights before output layer
     dEdz = outW * res.dEdo;
     dEdz = reshape(dEdz, [1, 1, numel(dEdz)]);
@@ -51,7 +44,7 @@ if nargin > 5
     % Backwards through concatenation of 1-max pooling
     dEdp = vl_nnconcat(poolRes, 3, dEdz);
     
-     for j=1:numFilterSizes
+     for j=1:dims.numFilterSizes
         
          % Backward through 1-max pool on feature maps
          convSize = size(convRes{j});
