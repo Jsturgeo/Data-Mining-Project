@@ -1,26 +1,22 @@
-% clear; clc;
+clear; clc;
+
+inFileName = 'sample_test.txt';
+outFileName = 'out1.txt';
+
 load('custom_embedding.mat');
 load('weights.mat');
 
-filterSizes = [2, 3, 4];
-numFilterSizes = length(filterSizes);
-numFilters = 2;
-
-padVal = '#pad#';
-
-%[data, ~] = read_data('train.txt');
-data = testData;
-predLabels = zeros(length(data),1);
-trueLabels = zeros(length(data),1);
+[data, ~] = read_data(inFileName, 0);
 [lengthT, dimT] = size(T);
 
+predictions = zeros(2, length(data));
+
 for ind=1:length(data)
-    [i, sentence, trueLabel] = data{ind,:};
-    sentence
-    trueLabels(i) = trueLabel;
+    [i, sentence] = data{ind,:};
+    predictions(1, ind) = i;
     sentenceLength = length(sentence);
-    if sentenceLength < max(filterSizes)
-        numPad = max(filterSizes) - sentenceLength;
+    if sentenceLength < max(dims.filterSizes)
+        numPad = max(dims.filterSizes) - sentenceLength;
         padCell = cell(1, numPad);
         [padCell{1:numPad}] = deal(padVal);
         sentence = [sentence padCell];
@@ -42,9 +38,14 @@ for ind=1:length(data)
     end
     X = T(sentenceWordInds, :);
     
-    res = sentimentCNN(X, convW, convB, outW, outB);
+    res = sentimentCNN(X, convW, convB, outW, outB, dims);
     
-    [~, output] = max(abs(res.output));
+    [~, output] = max(res.output);
     
-    predLabels(ind) = output - 1;
+    predictions(2, ind) = output - 1;
 end
+
+outFile = fopen(outFileName, 'w');
+
+formatSpec = '%d::%d\n';
+fprintf(outFile,formatSpec, predictions);

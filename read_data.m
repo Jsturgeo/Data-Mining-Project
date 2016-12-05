@@ -11,7 +11,11 @@ separater = '::';
 padVal = '#pad#';
 
 words = [];
-data = cell(6000, 3);
+if trainData
+    data = cell(6000, 3);
+else
+    data = cell(6000, 2);
+end
 
 fid = fopen(fileName, 'r');
 line = fgets(fid);
@@ -46,11 +50,14 @@ while ischar(line)
     line = fgets(fid);
     ind = ind + 1;
 end
+emptyCells = cellfun('isempty', data);
+data(all(emptyCells,2),:) = [];
 if trainData
     words = unique(words);
     wordMap = containers.Map(words, 1:length(words));
+    wordMap(padVal) = length(wordMap)+1;
 else
     wordMap = NaN;
 end
-wordMap(padVal) = length(wordMap)+1;
+
 fprintf('finish loading data and vocabulary\n');
