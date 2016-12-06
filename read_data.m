@@ -1,20 +1,33 @@
 function [data, wordMap] = read_data(fileName, trainData)
-% CMPT-741 example code for: reading training data and building vocabulary.
-% NOTE: reading testing data is similar, but no need to build the vocabulary.
-%
-% return: 
-%       data(cell), 1st column -> sentence id, 2nd column -> words, 3rd column -> label
-%       wordMap(Map), contains all words and their index, get word index by calling wordMap(word)
+% Based on code provided by Jiaxi Tang.
+% Reads data from file with fileName and returns parsed data
+% and map of vocabulary (if applicalble)
+% if trainData flag is specified, parsed data includes labels
+% and the wordmap is populated
+% Otherwise, parsed data does not include labels and vocabulary
+% is not compiled
+% return:
+%    If trainData is specified: 
+%       data(cell), 1st column -> sentence id, 
+                    2nd column -> words, 
+                    3rd column -> label
+%       wordMap(Map), contains all words and their index, 
+                      get word index by calling wordMap(word)
+%    Otherwise:
+%       data(cell), 1st column -> sentence id, 
+                    2nd column -> words
+%       wordMap(NaN), dummy variable
 
 headLine = true;
 separater = '::';
 padVal = '#pad#';
+maxCells = 6000;
 
 words = [];
 if trainData
-    data = cell(6000, 3);
+    data = cell(maxCells, 3);
 else
-    data = cell(6000, 2);
+    data = cell(maxCells, 2);
 end
 
 fid = fopen(fileName, 'r');
@@ -50,8 +63,11 @@ while ischar(line)
     line = fgets(fid);
     ind = ind + 1;
 end
+% Remove empty data cells
 emptyCells = cellfun('isempty', data);
 data(all(emptyCells,2),:) = [];
+
+% Compile word map (if applicable)
 if trainData
     words = unique(words);
     wordMap = containers.Map(words, 1:length(words));
@@ -60,4 +76,4 @@ else
     wordMap = NaN;
 end
 
-fprintf('finish loading data and vocabulary\n');
+fprintf('Finished loading data and vocabulary\n');
